@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/modelos/modelo.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/paginas/includes/menu.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+	
+		<f:facet name="header">
+		<p:commandButton value="Novo veículo"
+				oncomplete="PF('dlgVeiculoNovo').show();"
+				update=":formularioVeiculoNovo:painelVeiculoNovo" />
+		</f:facet>
+
+		<h:form id="veiculosListar">
+			<p:dataTable var="item" value="#{MBVeiculos.listaDeVeiculos}" id="listaDeVeiculos"
+			paginator="true" rows="15">
+				<p:column headerText="Apto">
+					<h:outputText value="#{item.apartamentoVeiculo.apto} - #{item.apartamentoVeiculo.torre}" />
+				</p:column>
+				<p:column headerText="Placa">
+					<h:outputText value="#{item.placa}" />
+				</p:column>
+				<p:column headerText="Modelo">
+					<h:outputText value="#{item.modelo}" />
+				</p:column>
+				<p:column headerText="Cor">
+					<h:outputText value="#{item.cor}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton value="Alterar"
+						oncomplete="PF('dlgVeiculoAlterar').show();"
+						update=":formularioVeiculoAlterar:painelVeiculoAlterar">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBVeiculos.veiculo}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+					<p:commandButton value="Excluir"
+						oncomplete="PF('dlgVeiculoExcluir').show();"
+						update=":formularioVeiculoExcluir:painelVeiculoExcluir">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBVeiculos.veiculo}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+			
+		<p:dialog widgetVar="dlgVeiculoNovo" closable="true"
+			dragable="false" resizable="false" header="Cadastrar veículo"
+			modal="true" appendTo="@(body)">
+			<h:form id="formularioVeiculoNovo">
+				<h:panelGrid columns="2" id="painelVeiculoNovo">
+					<p:outputLabel value="Modelo: " />
+					<h:inputText size="30" maxlength="255" id="modelo"
+						value="#{MBVeiculos.veiculo.modelo}" />
+					<p:outputLabel value="Cor: " />
+					<h:inputText size="30" maxlength="255" id="cor"
+						value="#{MBVeiculos.veiculo.cor}" />
+					<p:outputLabel value="Placa: " required="true" requiredMessage="Insira a placa" />
+					<h:inputText size="30" maxlength="255" id="placa"
+						value="#{MBVeiculos.veiculo.placa}" />
+					<p:outputLabel value="Apartamento: " />
+					<p:selectOneMenu id="apartamentoVeiculo" value="#{MBVeiculos.veiculo.apartamentoVeiculo.id}">
+					<f:selectItems 
+						value="#{MBApartamentos.listaDeApartamentos}" 
+						var="item" 
+						itemLabel="#{item.apto} - #{item.torre}" 
+						itemValue="#{item.id}" />
+					</p:selectOneMenu>	
+					
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{MBVeiculos.cadastrarVeiculo}"
+						oncomplete="PF('dlgVeiculoNovo').hide();"
+						update=":veiculosListar:listaDeVeiculos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgVeiculoNovo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgVeiculoAlterar" closable="true"
+			dragable="false" resizable="false" header="Alterar veículo"
+			modal="true" appendTo="@(body)">
+			<h:form id="formularioVeiculoAlterar">
+				<h:panelGrid columns="2" id="painelVeiculoAlterar">
+					<p:outputLabel value="Modelo: " />
+					<h:inputText size="30" maxlength="255" id="modelo"
+						value="#{MBVeiculos.veiculo.modelo}" />
+					<p:outputLabel value="Cor: " />
+					<h:inputText size="30" maxlength="255" id="cor"
+						value="#{MBVeiculos.veiculo.cor}" />
+					<p:outputLabel value="Placa: " required="true" requiredMessage="Insira a placa" />
+					<h:inputText size="30" maxlength="255" id="placa"
+						value="#{MBVeiculos.veiculo.placa}" />
+					<p:outputLabel value="Apartamento: " />
+					<p:selectOneMenu id="apartamentoVeiculo" value="#{MBVeiculos.veiculo.apartamentoVeiculo.id}">
+					<f:selectItems 
+						value="#{MBApartamentos.listaDeApartamentos}" 
+						var="item" 
+						itemLabel="#{item.apto} - #{item.torre}" 
+						itemValue="#{item.id}" />
+					</p:selectOneMenu>	
+					
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar dados"
+						actionListener="#{MBVeiculos.alterarVeiculo}"
+						oncomplete="PF('dlgVeiculoAlterar').hide();"
+						update=":veiculosListar:listaDeVeiculos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgVeiculoAlterar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgVeiculoExcluir" closable="true"
+			dragable="false" resizable="false" header="Excluir veículo"
+			modal="true" appendTo="@(body)">
+			<h:form id="formularioVeiculoExcluir">
+				<h:panelGrid id="painelVeiculoExcluir" columns="2">
+					<h:outputText value="Tem certeza que deseja excluir o veículo #{MBVeiculos.veiculo.placa}?" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBVeiculos.removerVeiculo}"
+						oncomplete="PF('dlgVeiculoExcluir').hide();"
+						update=":veiculosListar:listaDeVeiculos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgVeiculoExcluir').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

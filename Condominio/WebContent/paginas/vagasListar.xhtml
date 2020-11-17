@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/modelos/modelo.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/paginas/includes/menu.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="vagasListar">
+			<p:dataTable var="item" value="#{MBApartamentos.listaDeApartamentos}"
+				tableStyle="width: auto;" id="listaDeVagas" editable="true" paginator="true" rows="30">
+				
+				<p:ajax event="rowEdit" listener="#{MBApartamentos.editarVaga}" update=":vagasListar:listaDeVagas" />
+				<p:ajax event="rowEditCancel" listener="#{MBApartamentos.editarVagaCancelar}" update=":vagasListar:listaDeVagas" />
+
+				<p:column headerText="Apto">
+					<h:outputText value="#{item.apto} - #{item.torre}" />
+				</p:column>
+
+				<p:column headerText="Vaga">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{item.vaga}" />
+						</f:facet>
+                		<f:facet name="input">
+                			<p:inputText value="#{item.vaga}" style="width:70%" size="1" label="Vaga"/>
+                		</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column headerText="Editar" style="width:35px">
+					<p:rowEditor />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

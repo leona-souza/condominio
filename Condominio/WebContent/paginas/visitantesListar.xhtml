@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/modelos/modelo.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/paginas/includes/menu.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+	
+		<f:facet name="header">
+		<p:commandButton value="Novo visitante"
+				oncomplete="PF('dlgVisitanteNovo').show();"
+				update=":formularioVisitanteNovo:painelVisitanteNovo" />
+		</f:facet>
+
+		<h:form id="visitantesListar">
+			<p:dataTable var="item" value="#{MBVisitantes.listaDeVisitantes}" id="listaDeVisitantes"
+			paginator="true" rows="15">
+				<p:column headerText="Nome">
+					<h:outputText value="#{item.nome}" />
+				</p:column>
+				
+				<p:column headerText="Documento">
+					<h:outputText
+						value="#{item.documento}" />
+				</p:column>
+				
+				<p:column headerText="Obs">
+					<h:outputText
+						value="#{item.obs}" />
+				</p:column>
+				
+				<p:column headerText="Apto">
+					<h:outputText
+						value="#{item.apartamentoVisitante.apto} - #{item.apartamentoVisitante.torre}" />
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton value="Alterar"
+						oncomplete="PF('dlgVisitanteAlterar').show();"
+						update=":formularioVisitanteAlterar:painelVisitanteAlterar">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBVisitantes.visitante}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+					<p:commandButton value="Excluir"
+						oncomplete="PF('dlgVisitanteExcluir').show();"
+						update=":formularioVisitanteExcluir:painelVisitanteExcluir">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBVisitantes.visitante}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		
+		<p:dialog widgetVar="dlgVisitanteNovo" closable="true"
+			dragable="false" resizable="false" header="Cadastrar visitante"
+			modal="true" appendTo="@(body)">
+			<h:form id="formularioVisitanteNovo">
+				<h:panelGrid columns="2" id="painelVisitanteNovo">
+					<p:outputLabel value="Nome: " />
+					<h:inputText size="30" maxlength="255" id="nome"
+						value="#{MBVisitantes.visitante.nome}" required="true" requiredMessage="Insira o nome" />
+					<p:outputLabel value="Documento: " />
+					<h:inputText size="30" maxlength="255" id="documento"
+						value="#{MBVisitantes.visitante.documento}" />
+					<p:outputLabel value="Obs: " />
+					<h:inputText size="30" maxlength="255" id="telefone"
+						value="#{MBVisitantes.visitante.obs}" />
+					<p:outputLabel value="Apartamento: " />
+					<p:selectOneMenu id="apartamentoVisitante" value="#{MBVisitantes.visitante.apartamentoVisitante.id}">
+					<f:selectItems 
+						value="#{MBApartamentos.listaDeApartamentos}" 
+						var="item" 
+						itemLabel="#{item.apto} - #{item.torre}" 
+						itemValue="#{item.id}" />
+					</p:selectOneMenu>	
+					
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{MBVisitantes.cadastrarVisitante}"
+						oncomplete="PF('dlgVisitanteNovo').hide();"
+						update=":visitantesListar:listaDeVisitantes :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgVisitanteNovo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgVisitanteAlterar" closable="true"
+			dragable="false" resizable="false" header="Alterar visitante"
+			modal="true" appendTo="@(body)">
+			<h:form id="formularioVisitanteAlterar">
+				<h:panelGrid columns="2" id="painelVisitanteAlterar">
+					<p:outputLabel value="Nome: " />
+					<h:inputText size="30" maxlength="255" id="nome"
+						value="#{MBVisitantes.visitante.nome}" required="true" requiredMessage="Insira o nome" />
+					<p:outputLabel value="Documento: " />
+					<h:inputText size="30" maxlength="255" id="documento"
+						value="#{MBVisitantes.visitante.documento}" />
+					<p:outputLabel value="Obs: " />
+					<h:inputText size="30" maxlength="255" id="telefone"
+						value="#{MBVisitantes.visitante.obs}" />
+					<p:outputLabel value="Apartamento: " />
+					<p:selectOneMenu id="apartamentoVisitante" value="#{MBVisitantes.visitante.apartamentoVisitante.id}">
+					<f:selectItems 
+						value="#{MBApartamentos.listaDeApartamentos}" 
+						var="item" 
+						itemLabel="#{item.apto} - #{item.torre}" 
+						itemValue="#{item.id}" />
+					</p:selectOneMenu>	
+					
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Alterar dados"
+						actionListener="#{MBVisitantes.alterarVisitante}"
+						oncomplete="PF('dlgVisitanteAlterar').hide();"
+						update=":visitantesListar:listaDeVisitantes :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgVisitanteAlterar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog widgetVar="dlgVisitanteExcluir" closable="true"
+			dragable="false" resizable="false" header="Excluir visitante"
+			modal="true" appendTo="@(body)">
+			<h:form id="formularioVisitanteExcluir">
+				<h:panelGrid id="painelVisitanteExcluir" columns="2">
+					<h:outputText value="Tem certeza que deseja excluir o visitante #{MBVisitantes.visitante.nome}?" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBVisitantes.removerVisitante}"
+						oncomplete="PF('dlgVisitanteExcluir').hide();"
+						update=":visitantesListar:listaDeVisitantes :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgVisitantesExcluir').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

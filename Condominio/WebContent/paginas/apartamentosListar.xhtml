@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/modelos/modelo.xhtml">
+
+	<ui:define name="menu">
+		<p:growl id="messages" />
+		<ui:include src="/paginas/includes/menu.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="apartamentosListar">
+			<p:dataTable var="item" value="#{MBApartamentos.listaDeApartamentos}"
+				id="listaDeApartamentos" paginator="true" rows="8">
+				<p:column headerText="Apto">
+					<h:outputText value="#{item.apto} - #{item.torre}" />
+				</p:column>
+				<p:column headerText="Moradores">
+					<ui:repeat value="#{MBMoradores.getById(item.id)}" var="morador"
+						varStatus="status">
+						<h:outputText value="#{morador.nome}#{status.last?'':', '}" />
+					</ui:repeat>
+				</p:column>
+				
+				<p:column headerText="Vaga">
+					<h:outputText value="#{item.vaga}" />
+				</p:column>
+				
+				<p:column headerText="Veículo">
+					<ui:repeat value="#{MBVeiculos.getById(item.id)}" var="veiculo">
+						<h:outputText
+							value="#{veiculo.modelo} #{veiculo.cor} #{veiculo.placa} " />
+					</ui:repeat>
+				</p:column>
+				<p:column headerText="Obs">
+					<h:outputText value="#{item.obs}" />
+				</p:column>
+
+				<p:column headerText="Editar">
+					<p:commandButton value="Alterar dados"
+						ignoreAutoUpdate="true"
+						oncomplete="PF('dlgApartamentoEditar').show();"
+						update=":formApartamentoEditar:painelApartamentoEditar">
+						<f:setPropertyActionListener
+							target="#{MBApartamentos.apartamento}" value="#{item}" />
+					</p:commandButton>					
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<!-- Caixas de diálogo -->
+
+		<p:dialog widgetVar="dlgApartamentoEditar" closable="true"
+			dragable="false" resizable="false" header="Editar Apartamento"
+			modal="true" appendTo="@(body)">
+			<h:form id="formApartamentoEditar">
+				<h:panelGrid id="painelApartamentoEditar" columns="2">
+					<h:outputText value="Apto:" />
+					<h:outputText
+						value="#{MBApartamentos.apartamento.apto} - #{MBApartamentos.apartamento.torre}" />
+					<h:outputText value="Moradores:" />
+					<ui:repeat
+						value="#{MBMoradores.getById(MBApartamentos.apartamento.id)}"
+						var="morador" varStatus="status">
+						<h:outputText value="#{morador.nome}#{status.last?'':', '}" />
+					</ui:repeat>
+					<h:outputText value="Vaga:" />
+					<h:inputText value="#{MBApartamentos.apartamento.vaga}" size="4" />
+
+					<h:outputText value="Veículo:" />
+					<ui:repeat
+						value="#{MBVeiculos.getById(MBApartamentos.apartamento.id)}"
+						var="veiculo">
+						<h:outputText
+							value="#{veiculo.modelo} #{veiculo.cor} #{veiculo.placa} " />
+					</ui:repeat>
+					<h:outputText value="Obs:" />
+					<h:inputText value="#{MBApartamentos.apartamento.obs}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar"
+						actionListener="#{MBApartamentos.editarApto}"
+						oncomplete="PF('dlgApartamentoEditar').hide();"
+						update=":apartamentosListar:listaDeApartamentos :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgApartamentoEditar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

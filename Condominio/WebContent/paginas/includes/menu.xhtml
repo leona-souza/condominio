@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<h:form>
+		<p:growl id="messages" />
+		<p:menubar>
+			<p:menuitem value="Apartamentos" outcome="/paginas/apartamentosListar.xhtml" />
+			<p:menuitem value="Moradores" outcome="/paginas/moradoresListar.xhtml"  />
+			<p:menuitem value="Vagas" outcome="/paginas/vagasListar.xhtml" />
+			<p:menuitem value="Veículos" outcome="/paginas/veiculosListar.xhtml" />
+			<p:menuitem value="Visitantes" outcome="/paginas/visitantesListar.xhtml" />
+			<p:menuitem value="Configurar Apartamentos" outcome="/paginas/apartamentoCadastrar.xhtml" />
+
+			<p:submenu label="Ajuda" icon="pi pi-file">
+				<p:menuitem value="Sobre" url="#" />
+			</p:submenu>
+		</p:menubar>
+	</h:form>
+
+</ui:composition>
